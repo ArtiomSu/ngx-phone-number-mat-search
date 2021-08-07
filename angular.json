@@ -3,5 +3,37 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-  }
+    "ngx-phone-number-mat-search": {
+      "projectType": "library",
+      "root": "projects/ngx-phone-number-mat-search",
+      "sourceRoot": "projects/ngx-phone-number-mat-search/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-phone-number-mat-search/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-phone-number-mat-search/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-phone-number-mat-search/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-phone-number-mat-search/src/test.ts",
+            "tsConfig": "projects/ngx-phone-number-mat-search/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-phone-number-mat-search/karma.conf.js"
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "ngx-phone-number-mat-search"
 }

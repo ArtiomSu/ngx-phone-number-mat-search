@@ -1,0 +1,25 @@
+{
+  "name": "@artiomsu/ngx-phone-number-mat-search",
+  "version": "1.0.17",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArtiomSu/ngx-phone-number-mat-search"
+  },
+  "author": {
+    "name": "ArtiomSu",
+    "email": "artiomsudo@gmail.com"
+  },
+  "peerDependencies": {
+    "@angular/common": "~12.1.2",
+    "@angular/core": "~12.1.2",
+    "@angular/forms": "~12.1.2",
+    "@angular/compiler-cli": "~12.1.2",
+    "zone.js": "^0.11.4",
+    "rxjs": "^6.5.5",
+    "libphonenumber-js": "^1.9.2",
+    "@angular/material": "^12.2.0"
+  },
+  "dependencies": {
+    "tslib": "^2.2.0"
+  }
+}
