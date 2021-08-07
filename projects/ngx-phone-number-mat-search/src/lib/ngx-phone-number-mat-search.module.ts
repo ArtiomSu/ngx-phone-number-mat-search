@@ -2,7 +2,6 @@ import { NgModule, ModuleWithProviders} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { OnlyNumberDirective } from './only-number.directive';
-import { CountryPipe } from './country.pipe';
 import { CountryService } from './country.service';
 import { NgxPhoneNumberMatSearchComponent } from './ngx-phone-number-mat-search.component';
 import {MatInputModule} from "@angular/material/input";
@@ -19,8 +18,7 @@ declare module "@angular/core" {
 @NgModule({
   declarations: [
     NgxPhoneNumberMatSearchComponent,
-    OnlyNumberDirective,
-    CountryPipe
+    OnlyNumberDirective
   ],
   imports: [
     CommonModule,
@@ -31,8 +29,7 @@ declare module "@angular/core" {
     MatListModule
   ],
   exports: [
-    NgxPhoneNumberMatSearchComponent,
-    CountryPipe
+    NgxPhoneNumberMatSearchComponent
   ],
   providers: [CountryService]
 })

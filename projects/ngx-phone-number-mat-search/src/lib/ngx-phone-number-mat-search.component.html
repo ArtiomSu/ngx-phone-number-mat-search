@@ -29,12 +29,12 @@
 <!--   if required -->
   <mat-form-field *ngIf="required" appearance="outline">
     <mat-label>{{placeholder}}</mat-label>
-    <input class="form-control" [attr.maxlength]="maxlength" [(ngModel)]="phoneNumber" (ngModelChange)="updatePhoneNumber($event)"
+    <input onlyNumber class="form-control" [attr.maxlength]="maxlength" [(ngModel)]="phoneNumber" (ngModelChange)="updatePhoneNumber($event)"
           [type]="type"  required #phoneNumberInput matInput>
   </mat-form-field>
 
   <!-- if not required -->
-  <input class="form-control" [attr.maxlength]="maxlength" [(ngModel)]="phoneNumber" (ngModelChange)="updatePhoneNumber($event)"
+  <input onlyNumber class="form-control" [attr.maxlength]="maxlength" [(ngModel)]="phoneNumber" (ngModelChange)="updatePhoneNumber($event)"
   [placeholder]="placeholder" [type]="type" *ngIf="!required" #phoneNumberInput matInput>
 
 
