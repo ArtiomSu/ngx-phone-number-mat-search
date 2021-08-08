@@ -78,6 +78,7 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
   value = '';
 
   @ViewChild('phoneNumberInput') phoneNumberInput: ElementRef | undefined;
+  @ViewChild('phoneNumberSearchInput') phoneNumberSearchInput: ElementRef | undefined;
 
   /**
    * Util function to check if given text starts with plus sign
@@ -123,6 +124,9 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
       this.countries = this.allCountries;
       this.showDropdown = !this.showDropdown;
       this.countryFilter = '';
+      setTimeout(()=>{
+        this.phoneNumberSearchInput?.nativeElement.focus();
+      },10);
     }
   }
 
