@@ -1,34 +1,5 @@
 <div class="input-group">
-  <!-- <span class="input-group-addon flagInput"> -->
-         <!-- <div class="dropdown"> -->
-            <!-- <button mat-stroked-button type="button" class="dropbtn btn" (click)="displayDropDown()">
-              <span [class]="'flag flag-' + selectedCountry.countryCode" *ngIf="selectedCountry"></span>
-              <span class="defaultCountry" *ngIf="!selectedCountry"></span>
-              <span class="arrow-down"></span>
-            </button> -->
-            <!-- <div class="dropdown-content" *ngIf="showDropdown" clickOutside>
 
-
-              <mat-form-field class="search-input-form-field" appearance="outline">
-                <mat-label>Search</mat-label>
-                <input type="text" (input)="searchCountries($event)" matInput>
-              </mat-form-field>
-
-              <mat-list class="country-list">
-                <mat-list-item *ngFor="let country of countries" (click)="updateSelectedCountry($event, country.countryCode)">
-                  <div class="country-list-item" >
-                    <div [class]="'matlist-item-flag flag flag-' + country.countryCode"></div>
-                    <div class="country-name">{{ country.name }}</div>
-                    <div class="dial-code">+ {{ country.dialCode}}</div>
-                  </div>
-                </mat-list-item>
-              </mat-list>
-
-            </div> -->
-          <!-- </div> -->
-  <!-- </span> -->
-
-<!--   if required -->
   <mat-form-field appearance="outline">
     <mat-label>{{placeholder}}</mat-label>
     <div class="input-inner-wrapper">
@@ -42,17 +13,7 @@
     </div>
   </mat-form-field>
 
-  <!-- if not required -->
-  <!-- <mat-form-field *ngIf="!required" appearance="outline">
-    <mat-label>{{placeholder}}</mat-label>
-  <input onlyNumber class="form-control" [attr.maxlength]="maxlength" [(ngModel)]="phoneNumber" (ngModelChange)="updatePhoneNumber($event)"
-         [type]="type" #phoneNumberInput matInput>
-  </mat-form-field> -->
-
-
   <div class="dropdown-content" *ngIf="showDropdown" clickOutside>
-
-
     <mat-form-field class="search-input-form-field" appearance="outline">
       <mat-label>Search</mat-label>
       <input type="text" (input)="searchCountries($event)" #phoneNumberSearchInput matInput>
@@ -67,7 +28,6 @@
         </div>
       </mat-list-item>
     </mat-list>
-
   </div>
 
 </div>
