@@ -7,10 +7,11 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build-lib": "ng build ngx-phone-number-mat-search",
+    "purgemaps": "rm dist/ngx-phone-number-mat-search/bundles/artiomsu-ngx-phone-number-mat-search.umd.js.map && rm dist/ngx-phone-number-mat-search/fesm2015/artiomsu-ngx-phone-number-mat-search.js.map",
+    "build-lib": "ng build ngx-phone-number-mat-search && npm run purgemaps",
     "npm-pack": "cd dist/ngx-phone-number-mat-search && npm pack",
     "package": "npm run build-lib && npm run npm-pack",
-    "publish": "cd dist/ngx-phone-number-mat-search && npm publish",
+    "publish": "npm publish $(command ls dist/ngx-phone-number-mat-search/*.tgz)",
     "packagepublish": "npm run package && npm run publish"
 
   },

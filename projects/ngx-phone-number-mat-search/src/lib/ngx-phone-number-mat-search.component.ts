@@ -8,7 +8,6 @@ import {
   Output,
   EventEmitter,
   ViewChild,
-  ChangeDetectorRef
 } from '@angular/core';
 import {
   ControlValueAccessor,
@@ -101,8 +100,7 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
 
   constructor(
     private countryService: CountryService,
-    phoneComponent: ElementRef,
-    private changeDetection: ChangeDetectorRef
+    phoneComponent: ElementRef
   ) {
     this.phoneComponent = phoneComponent;
   }
@@ -325,12 +323,7 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
   }
 
   searchCountries(event: Event){
-    console.log("countries: ",this.countries);
-    console.log("allcountries", this.allCountries);
     this.countries = this.allCountries.filter((country) => { return country.name.toLowerCase().includes((event.target as HTMLInputElement).value.toLowerCase()) })
-    this.changeDetection.detectChanges();
-    console.log("countries AFTER: ",this.countries);
-    console.log("allcountries AFTER", this.allCountries);
   }
 
 }
