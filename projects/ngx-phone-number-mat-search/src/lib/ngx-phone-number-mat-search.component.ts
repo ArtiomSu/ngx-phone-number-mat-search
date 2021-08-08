@@ -120,6 +120,7 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
    */
   displayDropDown() {
     if (this.allowDropdown) {
+      this.countries = this.allCountries;
       this.showDropdown = !this.showDropdown;
       this.countryFilter = '';
     }

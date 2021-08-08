@@ -1,27 +1,47 @@
 .country-name {
   margin-left: 6px;
+  flex: 1;
+  flex-grow: 2;
+  white-space: nowrap;
 }
 
 .dial-code {
   color: #999;
-  align-self: end;
+  flex: 1;
+  white-space: nowrap;
+  margin-left: 6px;
 }
 
-mat-list {
-  flex-grow: 1;
-  border: 3px solid green;
+.matlist-item-flag{
+  flex:1;
+  max-width: 16px !important;
+  max-height: 11px !important;
+}
+
+.country-list{
+  flex: 1;
+  //border: 3px solid green;
   overflow: auto;
-  height: 20vh;
+  max-height: 20vh;
 }
 
 .country-list-item{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 .search-input-form-field{
-  margin-bottom: 2px;
+  width: 100%;
+}
+
+::ng-deep .mat-form-field-wrapper{
+  padding-bottom: 0px;
+}
+
+::ng-deep .mat-list-item-content{
+  padding: 0px !important;
 }
 
 .flagInput {
@@ -68,17 +88,19 @@ mat-list {
 .dropdown-content {
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 160px;
+  //min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1000;
+  border-radius: 5px;
+  padding: 10px;
 }
 
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
+// .dropdown-content a {
+//   color: black;
+//   padding: 12px 16px;
+//   text-decoration: none;
+//   display: block;
+// }
 
 
 .arrow-down {
