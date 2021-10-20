@@ -1,6 +1,6 @@
 <div class="input-group">
 
-  <mat-form-field appearance="outline">
+  <mat-form-field class="main-mat-form-field" appearance="outline">
     <mat-label>{{placeholder}}</mat-label>
     <div class="input-inner-wrapper">
       <button mat-stroked-button type="button" class="dropbtn btn" (click)="displayDropDown()">
@@ -20,7 +20,7 @@
     </mat-form-field>
 
     <mat-list class="country-list">
-      <mat-list-item *ngFor="let country of countries" (click)="updateSelectedCountry($event, country.countryCode)">
+      <mat-list-item class="mat-list-item-countries" *ngFor="let country of countries" (click)="updateSelectedCountry($event, country.countryCode)">
         <div class="country-list-item" >
           <div [class]="'matlist-item-flag flag flag-' + country.countryCode"></div>
           <div class="country-name">{{ country.name }}</div>

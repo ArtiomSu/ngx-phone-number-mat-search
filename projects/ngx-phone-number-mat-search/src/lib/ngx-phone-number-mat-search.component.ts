@@ -294,9 +294,9 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
   private updatePhoneInput(countryCode: string) {
     this.showDropdown = false;
 
-    let newInputValue: string = NgxPhoneNumberMatSearchComponent.startsWithPlus(
-      this.phoneNumber
-    )
+    let newInputValue = this.phoneNumber;
+    if(this.selectedCountry){
+      newInputValue = NgxPhoneNumberMatSearchComponent.startsWithPlus(this.phoneNumber)
       ? `${this.phoneNumber
         .split(PLUS)[1]
         .substr(
@@ -305,6 +305,11 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
           this.phoneNumber.length
         )}`
       : this.phoneNumber;
+    }else{
+      newInputValue = NgxPhoneNumberMatSearchComponent.startsWithPlus(this.phoneNumber)
+      ? this.phoneNumber.replace('+','')
+      : this.phoneNumber;
+    }
 
     // @ts-ignore
     this.selectedCountry = this.countries.find(
