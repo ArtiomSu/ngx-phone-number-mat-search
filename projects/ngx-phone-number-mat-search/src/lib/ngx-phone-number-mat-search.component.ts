@@ -11,15 +11,17 @@ import {
 } from '@angular/core';
 import {
   ControlValueAccessor,
-  FormControl,
-  Validator,
-  ValidationErrors,
-  NG_VALIDATORS,
+  // FormControl,
+  // Validator,
+  // ValidationErrors,
+  // NG_VALIDATORS,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
+//import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Country } from './country.model';
-import { CountryService } from './country.service';
+//import { CountryService } from './country.service';
+import COUNTRY_PHONE_DATA from './country-codes';
+//const COUNTRY_PHONE_DATA = require('./country-codes');
 
 const PLUS = '+';
 
@@ -29,11 +31,11 @@ const COUNTER_CONTROL_ACCESSOR = {
   multi: true
 };
 
-const VALIDATOR = {
-  provide: NG_VALIDATORS,
-  useExisting: forwardRef(() => NgxPhoneNumberMatSearchComponent),
-  multi: true
-};
+// const VALIDATOR = {
+//   provide: NG_VALIDATORS,
+//   useExisting: forwardRef(() => NgxPhoneNumberMatSearchComponent),
+//   multi: true
+// };
 
 
 @Component({
@@ -43,9 +45,11 @@ const VALIDATOR = {
   host: {
     '(document:click)': 'hideDropdown($event)'
   },
-  providers: [COUNTER_CONTROL_ACCESSOR, VALIDATOR]
+  // providers: [COUNTER_CONTROL_ACCESSOR, VALIDATOR]
+  providers: [COUNTER_CONTROL_ACCESSOR]
 })
-export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAccessor, Validator {
+// export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAccessor, Validator {
+export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAccessor {
 
   @Input() placeholder = 'Enter phone number'; // default
   @Input() maxlength = 15; // default
@@ -58,6 +62,8 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
   @Input() allowedCountries: Country[];
 
   @Output() onCountryCodeChanged: EventEmitter<any> = new EventEmitter();
+  @Output() phoneFocused: EventEmitter<any> = new EventEmitter();
+  @Output() selectedCountryChanged: EventEmitter<any> = new EventEmitter();
 
   // ELEMENT REF
   phoneComponent: ElementRef;
@@ -70,7 +76,8 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
 
   countries: Country[] = [];
   allCountries: Country[] = [];
-  selectedCountry: Country | null = {name: '',dialCode: '',countryCode: ''};
+  // selectedCountry: Country | null = {name: '',dialCode: '',countryCode: ''};
+  selectedCountry: Country | null = {country_name: '',country_code: '',alpha2: '', alpha3: '', mobile_begin_with: [], phone_number_lengths: []};
   countryFilter: string = '';
   showDropdown = false;
   phoneNumber = '';
@@ -94,13 +101,14 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
    */
   private static reducePrefixes(foundPrefixes: Country[]) {
     const reducedPrefixes = foundPrefixes.reduce((first: Country, second: Country) =>
-      first.dialCode.length > second.dialCode.length ? first : second
+      // first.dialCode.length > second.dialCode.length ? first : second
+      first.country_code.length > second.country_code.length ? first : second
     );
     return reducedPrefixes;
   }
 
   constructor(
-    private countryService: CountryService,
+    //private countryService: CountryService,
     phoneComponent: ElementRef
   ) {
     this.phoneComponent = phoneComponent;
@@ -108,9 +116,15 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
 
   ngOnInit(): void {
     if (this.allowedCountries && this.allowedCountries.length) {
-      this.countries = this.countryService.getCountriesByISO(this.allowedCountries);
+      this.countries = COUNTRY_PHONE_DATA.map(country =>{
+        country.alpha2 = country.alpha2.toLowerCase();
+        return country;
+      }) //this.countryService.getCountriesByISO(this.allowedCountries);
     } else {
-      this.countries = this.countryService.getCountries();
+      this.countries = COUNTRY_PHONE_DATA.map(country =>{
+        country.alpha2 = country.alpha2.toLowerCase();
+        return country;
+      }) //this.countryService.getCountries();
     }
     this.orderCountriesByName();
     this.allCountries = this.countries;
@@ -164,6 +178,7 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
       this.findPrefix(this.phoneNumber.split(PLUS)[1]);
     } else {
       this.selectedCountry = null;
+      this.selectedCountryChanged.emit(this.selectedCountry);
     }
 
     this.updateValue();
@@ -186,12 +201,15 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
   private findPrefix(prefix: string) {
     // @ts-ignore
     let foundPrefixes: Country[] = this.countries.filter((country: Country) =>
-      prefix.startsWith(country.dialCode)
+      // prefix.startsWith(country.dialCode)
+      prefix.startsWith(country.country_code)
     );
     if (foundPrefixes && foundPrefixes.length) {
       this.selectedCountry = NgxPhoneNumberMatSearchComponent.reducePrefixes(foundPrefixes);
+      this.selectedCountryChanged.emit(this.selectedCountry);
     } else {
       this.selectedCountry = null;
+      this.selectedCountryChanged.emit(this.selectedCountry);
     }
   }
 
@@ -200,9 +218,9 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
    */
   private orderCountriesByName() {
     // @ts-ignore
-    this.countries = this.countries.sort(function (a, b) {
-      return a['name'] > b['name'] ? 1 : b['name'] > a['name'] ? -1 : 0;
-    });
+    // this.countries = this.countries.sort(function (a, b) {
+    //   return a['name'] > b['name'] ? 1 : b['name'] > a['name'] ? -1 : 0;
+    // });
   }
 
   /**
@@ -232,7 +250,9 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
     if (NgxPhoneNumberMatSearchComponent.startsWithPlus(this.value)) {
       this.findPrefix(this.value.split(PLUS)[1]);
       if (this.selectedCountry) {
-        this.updatePhoneInput(this.selectedCountry.countryCode);
+        // this.updatePhoneInput(this.selectedCountry.countryCode);
+        this.updatePhoneInput(this.selectedCountry.alpha2);
+        this.selectedCountryChanged.emit(this.selectedCountry);
       }
     }
 
@@ -241,40 +261,40 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
     }
   }
 
-  /**
-   * Validation
-   * @param c
-   */
-  validate(c: FormControl): ValidationErrors | null {
-    let value = c.value;
-    // let selectedDialCode = this.getSelectedCountryDialCode();
-    let validationError: ValidationErrors = {
-      phoneEmptyError: {
-        valid: false
-      }
-    };
+  // /**
+  //  * Validation
+  //  * @param c
+  //  */
+  // validate(c: FormControl): ValidationErrors | null {
+  //   let value = c.value;
+  //   // let selectedDialCode = this.getSelectedCountryDialCode();
+  //   let validationError: ValidationErrors = {
+  //     phoneEmptyError: {
+  //       valid: false
+  //     }
+  //   };
 
-    if (this.required && !value) {
-      // if (value && selectedDialCode)
-      //     value = value.replace(/\s/g, '').replace(selectedDialCode, '');
+  //   if (this.required && !value) {
+  //     // if (value && selectedDialCode)
+  //     //     value = value.replace(/\s/g, '').replace(selectedDialCode, '');
 
-      // if (!value) return validationError;
-      return validationError;
-    }
+  //     // if (!value) return validationError;
+  //     return validationError;
+  //   }
 
-    if (value) {
-      // validating number using the google's lib phone
-      try {
-        let phoneNumber = parsePhoneNumberFromString(value);
-        // @ts-ignore
-        let isValidNumber = phoneNumber.isValid();
-        return isValidNumber ? null : validationError;
-      } catch (ex) {
-        return validationError;
-      }
-    }
-    return null;
-  }
+  //   if (value) {
+  //     // validating number using the google's lib phone
+  //     try {
+  //       let phoneNumber = parsePhoneNumberFromString(value);
+  //       // @ts-ignore
+  //       let isValidNumber = phoneNumber.isValid();
+  //       return isValidNumber ? null : validationError;
+  //     } catch (ex) {
+  //       return validationError;
+  //     }
+  //   }
+  //   return null;
+  // }
 
   /**
    * Updates the value and trigger changes
@@ -293,6 +313,7 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
    */
   private updatePhoneInput(countryCode: string) {
     this.showDropdown = false;
+    countryCode = countryCode.toUpperCase();
 
     let newInputValue = this.phoneNumber;
     if(this.selectedCountry){
@@ -301,7 +322,8 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
         .split(PLUS)[1]
         .substr(
           // @ts-ignore
-          this.selectedCountry.dialCode.length,
+          // this.selectedCountry.dialCode.length,
+          this.selectedCountry.country_code.length,
           this.phoneNumber.length
         )}`
       : this.phoneNumber;
@@ -313,11 +335,14 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
 
     // @ts-ignore
     this.selectedCountry = this.countries.find(
-      (country: Country) => country.countryCode === countryCode
+      // (country: Country) => country.countryCode === countryCode
+      (country: Country) => country.alpha2.toLowerCase() === countryCode.toLowerCase()
     );
+    this.selectedCountryChanged.emit(this.selectedCountry);
     if (this.selectedCountry) {
       this.phoneNumber = `${PLUS}${
-        this.selectedCountry.dialCode
+        // this.selectedCountry.dialCode
+        this.selectedCountry.country_code
       } ${newInputValue.replace(/ /g, '')}`;
     } else {
       this.phoneNumber = `${newInputValue.replace(/ /g, '')}`;
@@ -328,12 +353,18 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
    * Returns the selected country's dialcode
    */
   public getSelectedCountryDialCode(): string | null {
-    if (this.selectedCountry) { return PLUS + this.selectedCountry.dialCode; };
+    // if (this.selectedCountry) { return PLUS + this.selectedCountry.dialCode; };
+    if (this.selectedCountry) { return PLUS + this.selectedCountry.country_code; };
     return null;
   }
 
   searchCountries(event: Event){
-    this.countries = this.allCountries.filter((country) => { return country.name.toLowerCase().includes((event.target as HTMLInputElement).value.toLowerCase()) })
+    // this.countries = this.allCountries.filter((country) => { return country.name.toLowerCase().includes((event.target as HTMLInputElement).value.toLowerCase()) })
+    this.countries = this.allCountries.filter((country) => { return country.country_name.toLowerCase().includes((event.target as HTMLInputElement).value.toLowerCase()) })
+  }
+
+  sendFocusEvent(focused: boolean){
+    this.phoneFocused.emit(focused);
   }
 
 }

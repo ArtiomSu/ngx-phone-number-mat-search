@@ -2,7 +2,7 @@ import { NgModule, ModuleWithProviders} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { OnlyNumberDirective } from './only-number.directive';
-import { CountryService } from './country.service';
+//import { CountryService } from './country.service';
 import { NgxPhoneNumberMatSearchComponent } from './ngx-phone-number-mat-search.component';
 import {MatInputModule} from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -31,13 +31,13 @@ declare module "@angular/core" {
   exports: [
     NgxPhoneNumberMatSearchComponent
   ],
-  providers: [CountryService]
+  //providers: [CountryService]
 })
 export class NgxPhoneNumberMatSearchModule {
   static forRoot(): ModuleWithProviders{
     return {
       ngModule: NgxPhoneNumberMatSearchModule,
-      providers: [CountryService]
+      //providers: [CountryService]
     };
   }
 }
