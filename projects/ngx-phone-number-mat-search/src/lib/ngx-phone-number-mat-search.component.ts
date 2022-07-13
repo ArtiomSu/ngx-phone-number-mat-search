@@ -11,16 +11,16 @@ import {
 } from '@angular/core';
 import {
   ControlValueAccessor,
-  // FormControl,
-  // Validator,
-  // ValidationErrors,
-  // NG_VALIDATORS,
+  FormControl,
+  Validator,
+  ValidationErrors,
+  NG_VALIDATORS,
   NG_VALUE_ACCESSOR
 } from '@angular/forms';
 //import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { Country } from './country.model';
 //import { CountryService } from './country.service';
-import COUNTRY_PHONE_DATA from './country-codes';
+import COUNTRY_PHONE_DATA from './countries-merged-final';
 //const COUNTRY_PHONE_DATA = require('./country-codes');
 
 const PLUS = '+';
@@ -31,11 +31,11 @@ const COUNTER_CONTROL_ACCESSOR = {
   multi: true
 };
 
-// const VALIDATOR = {
-//   provide: NG_VALIDATORS,
-//   useExisting: forwardRef(() => NgxPhoneNumberMatSearchComponent),
-//   multi: true
-// };
+const VALIDATOR = {
+  provide: NG_VALIDATORS,
+  useExisting: forwardRef(() => NgxPhoneNumberMatSearchComponent),
+  multi: true
+};
 
 
 @Component({
@@ -45,11 +45,12 @@ const COUNTER_CONTROL_ACCESSOR = {
   host: {
     '(document:click)': 'hideDropdown($event)'
   },
-  // providers: [COUNTER_CONTROL_ACCESSOR, VALIDATOR]
-  providers: [COUNTER_CONTROL_ACCESSOR]
+  providers: [COUNTER_CONTROL_ACCESSOR, VALIDATOR]
+  //providers: [COUNTER_CONTROL_ACCESSOR]
 })
-// export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAccessor, Validator {
-export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAccessor {
+
+export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAccessor, Validator {
+//export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAccessor {
 
   @Input() placeholder = 'Enter phone number'; // default
   @Input() maxlength = 15; // default
@@ -77,10 +78,11 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
   countries: Country[] = [];
   allCountries: Country[] = [];
   // selectedCountry: Country | null = {name: '',dialCode: '',countryCode: ''};
-  selectedCountry: Country | null = {country_name: '',country_code: '',alpha2: '', alpha3: '', mobile_begin_with: [], phone_number_lengths: []};
+  selectedCountry: Country | null = {country_name: '',country_code: '',alpha2: '', phone_number_lengths: []};
   countryFilter: string = '';
   showDropdown = false;
   phoneNumber = '';
+  valid = false;
 
   value = '';
 
@@ -261,40 +263,98 @@ export class NgxPhoneNumberMatSearchComponent implements OnInit, ControlValueAcc
     }
   }
 
-  // /**
-  //  * Validation
-  //  * @param c
-  //  */
-  // validate(c: FormControl): ValidationErrors | null {
-  //   let value = c.value;
-  //   // let selectedDialCode = this.getSelectedCountryDialCode();
-  //   let validationError: ValidationErrors = {
-  //     phoneEmptyError: {
-  //       valid: false
-  //     }
-  //   };
+  /**
+   * Validation
+   * @param c
+   */
+  validate(c: FormControl): ValidationErrors | null {
+    let value = c.value;
+    // let selectedDialCode = this.getSelectedCountryDialCode();
+    // let validationError: ValidationErrors = {
+    //   phoneEmptyError: {
+    //     valid: false
+    //   }
 
-  //   if (this.required && !value) {
-  //     // if (value && selectedDialCode)
-  //     //     value = value.replace(/\s/g, '').replace(selectedDialCode, '');
 
-  //     // if (!value) return validationError;
-  //     return validationError;
-  //   }
+    let validationError = {
+      required: true
+    };
 
-  //   if (value) {
-  //     // validating number using the google's lib phone
-  //     try {
-  //       let phoneNumber = parsePhoneNumberFromString(value);
-  //       // @ts-ignore
-  //       let isValidNumber = phoneNumber.isValid();
-  //       return isValidNumber ? null : validationError;
-  //     } catch (ex) {
-  //       return validationError;
-  //     }
-  //   }
-  //   return null;
-  // }
+  
+
+    if (this.required && !value) {
+      // if (value && selectedDialCode)
+      //     value = value.replace(/\s/g, '').replace(selectedDialCode, '');
+
+      // if (!value) return validationError;
+      this.valid = false;
+      return validationError;
+    }
+
+    if (value) {
+      // validating number using the google's lib phone
+      try {
+        //let phoneNumber = parsePhoneNumberFromString(value);
+        // @ts-ignore
+        //let isValidNumber = phoneNumber.isValid();
+
+        this.valid = this.validatePhoneISO3166(value, this.selectedCountry?.alpha2);      
+
+        return this.valid ? null : validationError;
+      } catch (ex) {
+        this.valid = false;
+        return validationError;
+      }
+    }
+    this.valid = true;
+    return null;
+  }
+  
+  validatePhoneISO3166(phone: string, alpha2: string) {
+
+   // if true won't validate landlines
+   const validateMobilePrefix = false;
+   const plusSign = true;
+
+   const countryPhoneDatum = COUNTRY_PHONE_DATA.find(c => c.alpha2 === alpha2);
+
+   if(!countryPhoneDatum) {
+      return false;
+   }
+
+   if (!countryPhoneDatum.phone_number_lengths) {
+		return false;
+	 }
+
+   // remove the plus sign
+   phone = phone.replace(/\+/g, '');
+
+	// remove country calling code from the phone number
+	const phoneWithoutCountry = phone.replace(new RegExp('^' + countryPhoneDatum.country_code), '');
+
+	// if the phone number have +, countryPhoneDatum detected,
+	// but the phone number does not have country calling code
+	// then should consider the phone number as invalid
+	if (plusSign && countryPhoneDatum && phoneWithoutCountry.length === phone.length) {
+      //console.log(plusSign,!!countryPhoneDatum,phoneWithoutCountry,phone);
+      //console.log('returning false');
+		return false;
+	}
+
+	const phone_number_lengths = countryPhoneDatum.phone_number_lengths;
+	//const mobile_begin_with = countryPhoneDatum.mobile_begin_with;
+
+	const isLengthValid = phone_number_lengths.some(length => phoneWithoutCountry.length === length);
+	// some country doesn't have mobile_begin_with
+	// const isBeginWithValid = mobile_begin_with.length ?
+	// 	mobile_begin_with.some(beginWith => phoneWithoutCountry.match(new RegExp('^' + beginWith))):
+	// 	true;
+
+   //console.log(isLengthValid, isBeginWithValid, validateMobilePrefix);   
+   //console.log('final result is ',isLengthValid && (!validateMobilePrefix || isBeginWithValid));
+
+	return isLengthValid; //&& (!validateMobilePrefix || isBeginWithValid);
+}
 
   /**
    * Updates the value and trigger changes

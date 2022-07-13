@@ -9,7 +9,7 @@
         <span class="defaultCountry" *ngIf="!selectedCountry"></span>
         <span class="arrow-down"></span>
       </button>
-      <input onlyNumber class="form-control" [attr.maxlength]="maxlength" [(ngModel)]="phoneNumber" (ngModelChange)="updatePhoneNumber($event)"
+      <input onlyNumber class="form-control" [attr.maxlength]="maxlength" [minlength]="valid ? '2' : '100000'" [(ngModel)]="phoneNumber" (ngModelChange)="updatePhoneNumber($event)"
             [type]="type" [required]="required" (focusout)="sendFocusEvent(false)" (focus)="sendFocusEvent(true)" #phoneNumberInput matInput>
     </div>
   </mat-form-field>
