@@ -11,7 +11,7 @@ import {MatListModule} from "@angular/material/list";
 declare module "@angular/core" {
   interface ModuleWithProviders<T = any> {
     ngModule: Type<T>;
-    providers?: Provider[];
+    providers?: (Provider | EnvironmentProviders)[];
   }
 }
 

@@ -4,7 +4,7 @@ This is a rework of [ngx-phone-number](https://github.com/diokhan/ngx-phone-numb
 Uses [libphonenumber-js](https://github.com/catamphetamine/libphonenumber-js) instead of Google's lib.
 
 
-This rework updated the original module to use the latest angular version 12 and using `ng generate library` so it should be easier to work with. Added search input for countries and replaced standard html with Material versions
+This rework updated the original module to use the latest angular version 16 and using `ng generate library` so it should be easier to work with. Added search input for countries and replaced standard html with Material versions
 
 # Installation
 ```
